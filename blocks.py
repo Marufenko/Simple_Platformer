@@ -1,4 +1,6 @@
-import pygame
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from pygame import *
 
 PLATFORM_WIDTH = 32

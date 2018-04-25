@@ -4,6 +4,7 @@
 import pygame
 from pygame import *
 
+from camera import Camera
 from blocks import Platform
 from player import Player
 
@@ -34,26 +35,30 @@ def main():
     entities.add(hero)
 
     level = [
-        "-------------------------",
-        "-                       -",
-        "-                       -",
-        "-                       -",
-        "-            --         -",
-        "-                       -",
-        "--                      -",
-        "-                       -",
-        "-                   --- -",
-        "-                       -",
-        "-                       -",
-        "-      ---              -",
-        "-                       -",
-        "-   -----------         -",
-        "-                       -",
-        "-                -      -",
-        "-                   --  -",
-        "-                       -",
-        "-                       -",
-        "-------------------------"]
+        "----------------------------------",
+        "-                                -",
+        "-                       --       -",
+        "-                                -",
+        "-            --                  -",
+        "-                                -",
+        "--                               -",
+        "-                                -",
+        "-                   ----     --- -",
+        "-                                -",
+        "--                               -",
+        "-                                -",
+        "-                            --- -",
+        "-                                -",
+        "-                                -",
+        "-      ---                       -",
+        "-                                -",
+        "-   -------         ----         -",
+        "-                                -",
+        "-                         -      -",
+        "-                            --  -",
+        "-                                -",
+        "-                                -",
+        "----------------------------------"]
 
     x = y = 0
     for row in level:
@@ -65,6 +70,10 @@ def main():
             x += PLATFORM_WIDTH
         y += PLATFORM_HEIGHT
         x = 0
+
+    total_level_width = len(level[0]) * PLATFORM_WIDTH  # real level width
+    total_level_height = len(level) * PLATFORM_HEIGHT  # height
+    camera = Camera(camera_configure, total_level_width, total_level_height)
 
     while 1:
         timer.tick(60)
@@ -89,9 +98,23 @@ def main():
         screen.blit(bg, (0, 0))
 
         hero.update(left, right, up, platforms)
-        entities.draw(screen)
+        camera.update(hero)
+        for e in entities:
+            screen.blit(e.image, camera.apply(e))
 
         pygame.display.update()
+
+def camera_configure(camera, target_rect):
+    l, t, _, _ = target_rect
+    _, _, w, h = camera
+    l, t = -l+WIN_WIDTH / 2, -t+WIN_HEIGHT / 2
+
+    l = min(0, l)  # don't move out of left border
+    l = max(-(camera.width - WIN_WIDTH), l)
+    t = max(-(camera.height - WIN_HEIGHT), t)
+    t = min(0, t)
+
+    return Rect(l, t, w, h)
 
 
 if __name__ == "__main__":
