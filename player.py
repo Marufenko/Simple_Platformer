@@ -20,7 +20,7 @@ class Player(sprite.Sprite):
         self.startX = x
         self.startY = y
         self.image = Surface((WIDTH, HEIGHT))
-        self.image.fill(Color(COLOR))
+        self.image = image.load("mario/0.png")
         self.rect = Rect(x, y, WIDTH, HEIGHT)
 
     def update(self, left, right, up, platforms):
